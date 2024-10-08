@@ -1,143 +1,93 @@
-
-#define green_3  10
-#define yellow_3  9
-#define red_3  8
-
-#define green_2  7
-#define yellow_2  6
-#define red_2  5
-
-#define green_1  4
-#define yellow_1  3
-#define red_1  2
-
-#define red_1_on RED_1_on()
-#define red_2_on RED_2_on()
-#define red_3_on RED_3_on()
-
-#define yellow_1_on YELLOW_1_on()
-#define yellow_2_on YELLOW_2_on()
-#define yellow_3_on YELLOW_3_on()
-
-#define green_1_on GREEN_1_on()
-#define green_2_on GREEN_2_on()
-#define green_3_on GREEN_3_on()
-
 #define LED_all_off LED_ALL_OFF()
 
-int led[9]={red_1, yellow_1, green_1, red_2, yellow_2, green_2, red_3, yellow_3, green_3};
+#define red_1 2
+#define red_2 5
+#define red_3 8
 
-void LED_ALL_OFF(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
+#define yellow_1 3
+#define yellow_2 6
+#define yellow_3 9
+
+#define green_1 4
+#define green_2 7
+#define green_3 10
+
+#define sw_1 11
+
+int led_R[3]={red_1, red_2, red_3};
+int led_Y[3]={yellow_1, yellow_2, yellow_3};
+int led_G[3]={green_1, green_2, green_3};
+
+void led_all_off(){
+  for(int i=0; i<3; i++){
+    digitalWrite(*(led_R+i), LOW);
+    digitalWrite(*(led_Y+i), LOW);
+    digitalWrite(*(led_G+i), LOW);
   }
 }
 
-void RED_1_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
+void led_Yellow(){
 
-  digitalWrite(red_1, HIGH);
-}
+  led_all_off();
 
-void RED_2_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
+ // for(int i=0; i<3; i++){
+    for(int j=0; j<3; j++)
+      digitalWrite(*(led_Y+j), HIGH);
+ //   delay(500);
 
-  digitalWrite(red_2, HIGH);
-}
-
-void RED_3_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(red_3, HIGH);
-}
-
-void YELLOW_1_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(yellow_1, HIGH);
-}
-
-void YELLOW_2_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(yellow_2, HIGH);
-}
-
-void YELLOW_3_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(yellow_3, HIGH);
-}
-
-void GREEN_1_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(green_1, HIGH);
-}
-
-void GREEN_2_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(green_2, HIGH);
-}
-
-void GREEN_3_on(){
-  for(int i=0; i<10; i++){
-    digitalWrite(led[i], LOW);
-  }
-
-  digitalWrite(green_3, HIGH);
+  //   for(int j=0; j<3; j++)
+  //     digitalWrite(led_Y[j], LOW);  
+  //   delay(500);
+  // }
+  delay(2000);
 }
 
 void setup() {
-  // put your setup code here, to run once:
-  for(int i=0; i<10; i++)
-    pinMode(led[i], OUTPUT);
+  for(int i=0; i<3; i++){
+    pinMode(*(led_R+i), OUTPUT);
+    pinMode(*(led_Y+i), OUTPUT);
+    pinMode(*(led_G+i), OUTPUT);
+    pinMode(sw_1, INPUT);
+  }
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+static int swOk=0;
+
+void loop() {  
+  int sw=0;  
   
-  for(int i=0; i<3; i++){
+  if(digitalRead(sw_1) == 0){
+    for(int i=0; i<50; i++){
+      if(digitalRead(sw_1) == 0)
+        sw++;
+      else
+        sw=0;
 
-
-
+      delay(1);
+    }
   }
 
-  red_1_on;
-  delay(500);
-  yellow_1_on;
-  delay(500);
-  green_1_on;
-  delay(500);
+  if(sw>=30)
+    swOk = 1;
 
-  red_2_on;
-  delay(500);
-  yellow_2_on;
-  delay(500);
-  green_2_on;
-  delay(500);
+  if(swOk==1){
+  for(int i=0; i<3; i++){
+    led_all_off();
 
-  red_3_on;
-  delay(500);
-  yellow_3_on;
-  delay(500);
-  green_3_on;
-  delay(500);
+    digitalWrite(*(led_G+i), HIGH);
+
+    for(int j=0; j<3; j++){
+      if(i!=j)
+        digitalWrite(*(led_R+j), HIGH);
+    }
+
+    if(i==0)
+      delay(5000);
+    else
+      delay(7000);
+
+    led_Yellow();    
+  }
+  }
+  
 }
